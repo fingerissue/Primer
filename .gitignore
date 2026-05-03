@@ -1,0 +1,28 @@
+# Rust
+/target/
+core/target/
+cli/target/
+
+# OS
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+*~
+.fuse_hidden*
+.directory
+.trash/
+
+# IDE
+.vscode/
+.idea/
+
+# Security
+*.env
+*.pem
+*.key
+*.pfx
+
+# Guitar
+*.log
+tmp/
