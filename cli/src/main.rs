@@ -1,9 +1,11 @@
-use clap::{Parser, Subcommand};
+use primer_core::{ generate_salt };
+use clap::{ Parser, Subcommand };
 use anyhow::Result;
+use zeroize::Zeroizing;
 
 #[derive(Parser)]
 #[command(name = "primer")]
-#[command(about = "A production-grade CLI password manager", long_about = None)]
+#[command(about = "A production-ready CLI password manager", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -30,9 +32,7 @@ enum Commands {
 fn main() -> Result<()> {
   let cli = Cli::parse();
   match cli.command {
-    Commands::Init => {
-      println!("Initializing the vault...");
-    }
+    Commands::Init => handle_init()?,
     Commands::Add {service} => {
       println!("Adding entry for: {}", service);
     }
@@ -46,5 +46,23 @@ fn main() -> Result<()> {
       println!("Removing entry: {}", service);
     }
   }
+  Ok(())
+}
+
+fn handle_init() -> Result<()> {
+  println!("Initializing the vault...");
+  
+  let password = Zeroizing::new(rpassword::prompt_password("Enter master password: ")?);
+  let password_confirm = Zeroizing::new(rpassword::prompt_password("Confirm master password: ")?);
+  let is_match: bool = subtle::ConstantTimeEq::ct_eq(password.as_bytes(), password_confirm.as_bytes()).into();
+  if !is_match {
+    return Err(anyhow::anyhow!("Passwords do not match. Verification failed."));
+  }
+  
+  println!("Master password set successfully.");
+  
+  let salt = generate_salt();
+  println!("Your salt is {}", &*salt);
+  
   Ok(())
 }

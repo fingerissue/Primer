@@ -1,20 +1,19 @@
 use argon2::{
-    password_hash::{
-        PasswordHasher, SaltString,
-    },
+    password_hash::{ PasswordHasher, SaltString, rand_core::OsRng, },
     Argon2,
 };
-use zeroize::Zeroize;
+use zeroize::Zeroizing;
 
-pub fn hash_password(mut password: String, salt: &str) -> Result<String, argon2::password_hash::Error> {
+pub fn hash_password(password: &Zeroizing<String>, salt: &str) -> Result<String, argon2::password_hash::Error> {
   let salt_obj = SaltString::from_b64(salt)?;
   let argon2 = Argon2::default();
   
-  let password_hash = argon2.hash_password(password.as_bytes(), &salt_obj);
-  password.zeroize();
+  let password_hash = argon2.hash_password(password.as_bytes(), &salt_obj)?;
   
-  match password_hash {
-    Ok(hash) => Ok(hash.to_string()),
-    Err(e) => Err(e)
-  }
+  Ok(password_hash.to_string())
+}
+
+pub fn generate_salt() -> Zeroizing<String> {
+  let salt = SaltString::generate(&mut OsRng).to_string();
+  Zeroizing::new(salt)
 }

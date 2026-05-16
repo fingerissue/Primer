@@ -5,3 +5,10 @@ edition = "2024"
 
 [dependencies]
 primer-core = { path = "../core" }
+
+clap = { version = "4.5", features = ["derive"] } # CLI argument parsing
+rpassword = "7.3" # Not echo to the terminal
+# arboard = "3.4" # Copying passwords to clipboard - Not support in Termux
+anyhow = "1.0" # Error handling
+zeroize = { version = "1.7", features = ["derive"] }
+subtle = "2.6.1"
