@@ -3,6 +3,8 @@ use argon2::{
     Argon2,
 };
 use zeroize::Zeroizing;
+use anyhow::Result;
+use serde::{ Serialize, Deserialize };
 
 pub fn hash_password(password: &Zeroizing<String>, salt: &str) -> Result<String, argon2::password_hash::Error> {
   let salt_obj = SaltString::from_b64(salt)?;
@@ -16,4 +18,15 @@ pub fn hash_password(password: &Zeroizing<String>, salt: &str) -> Result<String,
 pub fn generate_salt() -> Zeroizing<String> {
   let salt = SaltString::generate(&mut OsRng).to_string();
   Zeroizing::new(salt)
+}
+
+pub trait VaultRepository {
+    fn save_master_key(&self, hashed_password: &str, salt: &str) -> Result<()>;
+    fn get_master_key(&self) -> Result<(String, Zeroizing<String>)>;
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct VaultData {
+  pub hashed_password: String,
+  pub salt: String,
 }
