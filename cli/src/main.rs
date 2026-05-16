@@ -1,7 +1,8 @@
-use primer_core::{ generate_salt };
+use primer_core::{ generate_salt, hash_password, FileStorage, VaultRepository };
 use clap::{ Parser, Subcommand };
 use anyhow::Result;
 use zeroize::Zeroizing;
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(name = "primer")]
@@ -62,7 +63,15 @@ fn handle_init() -> Result<()> {
   println!("Master password set successfully.");
   
   let salt = generate_salt();
-  println!("Your salt is {}", &*salt);
+  
+  let hash = hash_password(&password, &salt)?;
+  let save_path = PathBuf::from("vault.json");
+  let storage = FileStorage {
+    file_path: save_path.clone(),
+  };
+  storage.save_master_key(&hash, &salt)?;
+  
+  println!("Vault initialized successfully at {}", save_path.display());
   
   Ok(())
 }
