@@ -22,7 +22,7 @@ $RECYCLE.BIN/
 *.pem
 *.key
 *.pfx
-vault.json
+*.json
 
 # Guitar
 *.log
