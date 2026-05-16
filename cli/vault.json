@@ -1,4 +1,4 @@
 {
-  "hashed_password": "$argon2id$v=19$m=19456,t=2,p=1$977TnTqirnTscveT6yG1Lg$KkitBQ0ac/vdCdCdl7TUMnNZ0hGHf/8Q/ui2d8UBeX0",
-  "salt": "977TnTqirnTscveT6yG1Lg"
+  "hashed_password": "$argon2id$v=19$m=19456,t=2,p=1$8fCzoewha+LyCiqGTRgzKQ$Fhyb85Idt5/z1GbDoqc40jQ3X/vX4j0mFx0XwqqWOZU",
+  "salt": "8fCzoewha+LyCiqGTRgzKQ"
 }
